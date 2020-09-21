@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+{{ include "nginx.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+{{ include "nginx.labels" . | indent 6 }}
+  template:
+    metadata:
+      labels:
+{{ include "nginx.labels" . | indent 8 }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.service.internalPort }}
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.service.internalPort }}
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        volumeMounts:
+        - name: {{ .Release.Name }}-nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecret }}
+
+      volumes:
+        - name: {{ .Release.Name }}-nginx-config
+          configMap:
+            name: {{ include "nginx.name" . }}

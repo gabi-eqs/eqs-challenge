@@ -1,0 +1,34 @@
+replicaCount: 2
+
+image:
+  #repository: ghcr.io/vault60/eqs-challenge/esq-nginx
+  repository: nginx
+  tag: "latest"
+
+imagePullSecret: regcred-ghcr
+
+app:
+  name: eqs-test
+  env: production
+
+service:
+  type: NodePort
+  nodePort: 31234
+  port: 80
+  internalPort: 80
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 1024Mi
+  requests:
+    cpu: 100m
+    memory: 512Mi
+
+nginx:
+  numWorkerConnections: 1024
+  timeouts:
+    keepaliveTimeout: 65
+  gzip: "on"
+  logLevel: "warn"
+  numWorkerProcesses: "auto"
