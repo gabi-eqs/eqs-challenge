@@ -14,12 +14,12 @@ node('master') {
         remote.pty = true
     
         
-        /*stage('Install K8S') { */
-            /*sshCommand remote: remote, command: "snap install microk8s --classic"*/
-        /*}*/
-
         stage('Install K8S') { 
-            sshCommand remote: remote, command: "sudo ls -l /"
+            sshCommand remote: remote, command: "sudo snap install microk8s --classic"
+        }
+
+        stage('Modify config') { 
+            sshCommand remote: remote, command: "sudo sed -i 's/#MOREIPS/#MOREIPS\nIP.5 = ${DEPLOYMENT_TARGET}/' /var/snap/microk8s/current/certs/csr.conf.template"
         }
     }
 }
