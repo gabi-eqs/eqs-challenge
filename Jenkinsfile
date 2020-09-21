@@ -1,7 +1,9 @@
 node('master') {
-    /*parameters([*/
-            /*string(name: 'DEPLOYEMENT_TARGET', defaultValue: '', description: 'Hostname or IP of the target host')*/
-        /*])*/
+    properties([,
+        parameters([
+            string(name: 'DEPLOYEMENT_TARGET', defaultValue: '34.216.200.137', description: 'Hostname or IP of the target host')
+        ])
+    ])
     withCredentials([sshUserPrivateKey(credentialsId: 'Jenkins_deployer', keyFileVariable: 'keyfile', passphraseVariable: '', usernameVariable: '')]) {
         def remote = [:]
         remote.name = 'EQS k8s'
