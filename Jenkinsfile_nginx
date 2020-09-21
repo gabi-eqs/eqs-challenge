@@ -1,0 +1,14 @@
+node('master') {
+    stage('Clone repo') {
+        git url: 'https://github.com/vault60/eqs-challenge.git'
+    }
+    
+    stage('Run deployment') {
+        configFileProvider(
+        [configFile(fileId: 'f200627b-9fb7-4e3c-aaca-eb20d3f6ff96', variable: 'KUBE_CONFIG')]) {
+            dir("${WORKSPACE}/deployment") {
+                sh 'helm --kubeconfig=${KUBE_CONFIG} upgrade --install nginx nginx -f values.yaml'
+            }
+        }
+    }
+}
