@@ -1,7 +1,7 @@
 node('master') {
     properties([
         parameters([
-            string(name: 'DEPLOYEMENT_TARGET', defaultValue: '34.216.200.137', description: 'Hostname or IP of the target host')
+            string(name: 'DEPLOYMENT_TARGET', defaultValue: '34.216.200.137', description: 'Hostname or IP of the target host')
         ])
     ])
     withCredentials([sshUserPrivateKey(credentialsId: 'Jenkins_deployer', keyFileVariable: 'keyfile', passphraseVariable: '', usernameVariable: '')]) {
